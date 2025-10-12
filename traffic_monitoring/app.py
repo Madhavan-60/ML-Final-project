@@ -105,6 +105,26 @@ def stats():
         daily_avg = df.groupby('is_weekend')['total_vehicles'].mean().to_dict()
         weather_avg = df.groupby('weather')['total_vehicles'].mean().to_dict()
         
+        # Calculate correlation matrix for numeric columns
+        numeric_cols = ['hour', 'is_weekend', 'avg_speed', 'cars', 'motorcycles', 'buses', 'trucks', 'total_vehicles']
+        correlation_matrix = df[numeric_cols].corr().to_dict()
+        
+        # Vehicle type breakdown
+        vehicle_breakdown = {
+            'cars': int(df['cars'].sum()),
+            'motorcycles': int(df['motorcycles'].sum()),
+            'buses': int(df['buses'].sum()),
+            'trucks': int(df['trucks'].sum())
+        }
+        
+        # Road type analysis
+        road_type_avg = df.groupby('road_type')['total_vehicles'].mean().to_dict()
+        
+        # Speed vs traffic
+        speed_ranges = pd.cut(df['avg_speed'], bins=[0, 20, 40, 60, 80, 100], labels=['0-20', '20-40', '40-60', '60-80', '80-100'])
+        speed_traffic = df.groupby(speed_ranges)['total_vehicles'].mean().to_dict()
+        speed_traffic = {str(k): v for k, v in speed_traffic.items() if pd.notna(k)}
+        
         return jsonify({
             'success': True,
             'hourly_average': hourly_avg,
@@ -113,7 +133,11 @@ def stats():
             'total_samples': len(df),
             'avg_traffic': float(df['total_vehicles'].mean()),
             'max_traffic': int(df['total_vehicles'].max()),
-            'min_traffic': int(df['total_vehicles'].min())
+            'min_traffic': int(df['total_vehicles'].min()),
+            'correlation_matrix': correlation_matrix,
+            'vehicle_breakdown': vehicle_breakdown,
+            'road_type_average': road_type_avg,
+            'speed_traffic': speed_traffic
         })
     except Exception as e:
         return jsonify({
@@ -303,6 +327,25 @@ def analyze_video(filepath):
         else:
             traffic_level = 'High'
         
+        # Calculate frame-by-frame vehicle type distribution
+        frame_vehicle_breakdown = []
+        for frame_data in annotated_frames:
+            frame_breakdown = {'cars': 0, 'motorcycles': 0, 'buses': 0, 'trucks': 0}
+            for detection in frame_data['detections']:
+                vtype = detection['type']
+                if vtype in frame_breakdown:
+                    frame_breakdown[vtype] += 1
+            frame_vehicle_breakdown.append(frame_breakdown)
+        
+        # Calculate traffic density over time
+        time_intervals = []
+        for idx, count in enumerate(vehicle_counts):
+            time_intervals.append({
+                'frame': idx + 1,
+                'count': count,
+                'density': 'High' if count > avg_vehicles * 1.5 else ('Medium' if count > avg_vehicles * 0.5 else 'Low')
+            })
+        
         return {
             'duration': round(duration, 2),
             'fps': fps,
@@ -317,7 +360,9 @@ def analyze_video(filepath):
             'vehicle_counts': vehicle_counts,
             'vehicle_types': vehicle_types,
             'detection_method': 'YOLOv8',
-            'annotated_frames': annotated_frames
+            'annotated_frames': annotated_frames,
+            'frame_vehicle_breakdown': frame_vehicle_breakdown,
+            'time_intervals': time_intervals
         }
     except Exception as e:
         print(f"Error analyzing video: {str(e)}")

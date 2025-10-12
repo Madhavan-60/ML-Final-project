@@ -588,10 +588,55 @@
                         <video id="videoPreview" class="video-preview" controls></video>
                         <div id="videoMetrics"></div>
                         
-                        <!-- Detection Graph -->
-                        <div id="videoGraphContainer" style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="color: #667eea; margin-bottom: 15px;">📈 Vehicle Detection Over Time</h3>
-                            <canvas id="videoDetectionChart" style="max-height: 400px;"></canvas>
+                        <!-- Video-Specific Analytics Dashboard -->
+                        <div id="videoAnalyticsDashboard" style="margin: 20px 0;">
+                            <!-- Detection Over Time Graph -->
+                            <div id="videoGraphContainer" style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="color: #667eea; margin: 0;">📈 Vehicle Detection Over Time</h3>
+                                    <button onclick="downloadChart('videoDetectionChart', 'Video_Detection_Graph.png')" 
+                                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                        📥 Download
+                                    </button>
+                                </div>
+                                <canvas id="videoDetectionChart" style="max-height: 400px;"></canvas>
+                            </div>
+                            
+                            <!-- Video-Specific Vehicle Breakdown -->
+                            <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="color: #667eea; margin: 0;">🚗 Vehicle Type Distribution (This Video)</h3>
+                                    <button onclick="downloadChart('videoVehicleBreakdown', 'Video_Vehicle_Breakdown.png')" 
+                                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                        📥 Download
+                                    </button>
+                                </div>
+                                <canvas id="videoVehicleBreakdown" style="max-height: 350px;"></canvas>
+                            </div>
+                            
+                            <!-- Vehicle Types Per Frame -->
+                            <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="color: #667eea; margin: 0;">📊 Vehicle Types Per Frame</h3>
+                                    <button onclick="downloadChart('videoStackedChart', 'Video_Stacked_Chart.png')" 
+                                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                        📥 Download
+                                    </button>
+                                </div>
+                                <canvas id="videoStackedChart" style="max-height: 400px;"></canvas>
+                            </div>
+                            
+                            <!-- Traffic Density Heatmap -->
+                            <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="color: #667eea; margin: 0;">🔥 Traffic Density Visualization</h3>
+                                    <button onclick="downloadChart('videoDensityChart', 'Video_Density_Chart.png')" 
+                                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                        📥 Download
+                                    </button>
+                                </div>
+                                <canvas id="videoDensityChart" style="max-height: 350px;"></canvas>
+                            </div>
                         </div>
                         
                         <div id="detectionFrames"></div>
@@ -635,7 +680,13 @@
             
             <!-- Traffic Analysis Graphs -->
             <div class="card">
-                <h2>📊 Traffic Analysis Graphs</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>📊 Traffic Analysis Graphs</h2>
+                    <button onclick="downloadChart('hourlyTrafficChart', '24-Hour_Traffic_Pattern.png')" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                        📥 Download Chart
+                    </button>
+                </div>
                 <div style="margin-top: 20px;">
                     <canvas id="hourlyTrafficChart" style="max-height: 400px;"></canvas>
                 </div>
@@ -643,16 +694,85 @@
             
             <div class="main-content">
                 <div class="card">
-                    <h2>🌤️ Weather vs Traffic</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2>🌤️ Weather vs Traffic</h2>
+                        <button onclick="downloadChart('weatherTrafficChart', 'Weather_vs_Traffic.png')" 
+                                style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px;">
+                            📥 Download
+                        </button>
+                    </div>
                     <div style="margin-top: 20px;">
                         <canvas id="weatherTrafficChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
                 
                 <div class="card">
-                    <h2>📅 Weekend vs Weekday</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2>📅 Weekend vs Weekday</h2>
+                        <button onclick="downloadChart('dailyTrafficChart', 'Weekend_vs_Weekday.png')" 
+                                style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px;">
+                            📥 Download
+                        </button>
+                    </div>
                     <div style="margin-top: 20px;">
                         <canvas id="dailyTrafficChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehicle Breakdown Bar Chart -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>🚗 Vehicle Type Distribution</h2>
+                    <button onclick="downloadChart('vehicleBreakdownChart', 'Vehicle_Breakdown.png')" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                        📥 Download Chart
+                    </button>
+                </div>
+                <div style="margin-top: 20px;">
+                    <canvas id="vehicleBreakdownChart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Correlation Heatmap -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>🔥 Correlation Heatmap</h2>
+                    <button onclick="downloadChart('correlationHeatmap', 'Correlation_Heatmap.png')" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                        📥 Download Chart
+                    </button>
+                </div>
+                <div style="margin-top: 20px;">
+                    <canvas id="correlationHeatmap" style="max-height: 600px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Additional Bar Charts -->
+            <div class="main-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2>🛣️ Road Type Analysis</h2>
+                        <button onclick="downloadChart('roadTypeChart', 'Road_Type_Analysis.png')" 
+                                style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px;">
+                            📥 Download
+                        </button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <canvas id="roadTypeChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2>⚡ Speed vs Traffic</h2>
+                        <button onclick="downloadChart('speedTrafficChart', 'Speed_vs_Traffic.png')" 
+                                style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px;">
+                            📥 Download
+                        </button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <canvas id="speedTrafficChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -859,12 +979,32 @@
                 </div>
             `;
             
-            // Create detection graph if vehicle_counts data is available
+            // Create all video-specific graphs if data is available
             if (analysis.vehicle_counts && analysis.vehicle_counts.length > 0) {
-                createVideoDetectionChart(analysis.vehicle_counts, analysis.analyzed_frames);
-                document.getElementById('videoGraphContainer').style.display = 'block';
+                // Show dashboard with loading effect
+                const dashboard = document.getElementById('videoAnalyticsDashboard');
+                dashboard.style.display = 'block';
+                dashboard.style.opacity = '0';
+                
+                // Fade in the dashboard
+                setTimeout(() => {
+                    dashboard.style.transition = 'opacity 0.5s ease-in';
+                    dashboard.style.opacity = '1';
+                    
+                    // Create all video-specific charts
+                    createVideoDetectionChart(analysis.vehicle_counts, analysis.analyzed_frames);
+                    createVideoVehicleBreakdown(analysis.vehicle_types);
+                    
+                    if (analysis.frame_vehicle_breakdown) {
+                        createVideoStackedChart(analysis.frame_vehicle_breakdown);
+                    }
+                    
+                    if (analysis.time_intervals) {
+                        createVideoDensityChart(analysis.time_intervals);
+                    }
+                }, 100);
             } else {
-                document.getElementById('videoGraphContainer').style.display = 'none';
+                document.getElementById('videoAnalyticsDashboard').style.display = 'none';
             }
             
             // Display annotated detection frames
@@ -935,13 +1075,34 @@
         // Create video detection chart
         let videoDetectionChartInstance = null;
         function createVideoDetectionChart(vehicleCounts, analyzedFrames) {
-            // Destroy previous chart if exists
+            // Destroy previous chart if exists (clears old video data)
             if (videoDetectionChartInstance) {
                 videoDetectionChartInstance.destroy();
+                console.log('Previous chart cleared - Loading new video data...');
             }
+            
+            // Calculate statistics for this video
+            const avgVehicles = (vehicleCounts.reduce((a, b) => a + b, 0) / vehicleCounts.length).toFixed(1);
+            const maxVehicles = Math.max(...vehicleCounts);
+            const minVehicles = Math.min(...vehicleCounts);
+            const totalVehicles = vehicleCounts.reduce((a, b) => a + b, 0);
             
             // Create frame labels
             const labels = vehicleCounts.map((_, index) => `Frame ${index + 1}`);
+            
+            // Determine color based on traffic level
+            const avgValue = parseFloat(avgVehicles);
+            let chartColor, chartBgColor;
+            if (avgValue < 10) {
+                chartColor = '#28a745'; // Green for low traffic
+                chartBgColor = 'rgba(40, 167, 69, 0.2)';
+            } else if (avgValue < 20) {
+                chartColor = '#ffc107'; // Yellow for medium traffic
+                chartBgColor = 'rgba(255, 193, 7, 0.2)';
+            } else {
+                chartColor = '#dc3545'; // Red for high traffic
+                chartBgColor = 'rgba(220, 53, 69, 0.2)';
+            }
             
             const ctx = document.getElementById('videoDetectionChart').getContext('2d');
             videoDetectionChartInstance = new Chart(ctx, {
@@ -949,10 +1110,10 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Vehicles Detected',
+                        label: `Vehicles Detected (Avg: ${avgVehicles}, Max: ${maxVehicles}, Min: ${minVehicles}, Total: ${totalVehicles})`,
                         data: vehicleCounts,
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: chartColor,
+                        backgroundColor: chartBgColor,
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
@@ -1035,6 +1196,257 @@
                             },
                             grid: {
                                 display: false
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart',
+                        onComplete: function() {
+                            console.log('✅ New video graph rendered successfully!');
+                        }
+                    }
+                }
+            });
+            
+            // Scroll to graph smoothly
+            setTimeout(() => {
+                document.getElementById('videoGraphContainer').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+        }
+        
+        // Video-Specific Vehicle Breakdown Chart
+        let videoVehicleBreakdownInstance = null;
+        function createVideoVehicleBreakdown(vehicleTypes) {
+            if (videoVehicleBreakdownInstance) {
+                videoVehicleBreakdownInstance.destroy();
+            }
+            
+            const labels = Object.keys(vehicleTypes).map(v => v.charAt(0).toUpperCase() + v.slice(1));
+            const values = Object.values(vehicleTypes);
+            
+            const ctx = document.getElementById('videoVehicleBreakdown').getContext('2d');
+            videoVehicleBreakdownInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Detected Count',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Vehicle Distribution in This Video',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Stacked Bar Chart - Vehicle Types Per Frame
+        let videoStackedChartInstance = null;
+        function createVideoStackedChart(frameBreakdown) {
+            if (videoStackedChartInstance) {
+                videoStackedChartInstance.destroy();
+            }
+            
+            const labels = frameBreakdown.map((_, idx) => `Frame ${idx + 1}`);
+            const carsData = frameBreakdown.map(f => f.cars);
+            const motorcyclesData = frameBreakdown.map(f => f.motorcycles);
+            const busesData = frameBreakdown.map(f => f.buses);
+            const trucksData = frameBreakdown.map(f => f.trucks);
+            
+            const ctx = document.getElementById('videoStackedChart').getContext('2d');
+            videoStackedChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Cars',
+                            data: carsData,
+                            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Motorcycles',
+                            data: motorcyclesData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Buses',
+                            data: busesData,
+                            backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Trucks',
+                            data: trucksData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Vehicle Type Breakdown Across Frames',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Analyzed Frames',
+                                font: { size: 12, weight: 'bold' }
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 10 }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Vehicle Count',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Traffic Density Chart
+        let videoDensityChartInstance = null;
+        function createVideoDensityChart(timeIntervals) {
+            if (videoDensityChartInstance) {
+                videoDensityChartInstance.destroy();
+            }
+            
+            const labels = timeIntervals.map(t => `F${t.frame}`);
+            const counts = timeIntervals.map(t => t.count);
+            const densities = timeIntervals.map(t => t.density);
+            
+            // Color based on density
+            const colors = densities.map(d => {
+                if (d === 'High') return 'rgba(220, 53, 69, 0.8)';
+                if (d === 'Medium') return 'rgba(255, 193, 7, 0.8)';
+                return 'rgba(40, 167, 69, 0.8)';
+            });
+            
+            const ctx = document.getElementById('videoDensityChart').getContext('2d');
+            videoDensityChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Traffic Density',
+                        data: counts,
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c.replace('0.8', '1')),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Traffic Density Heatmap (🟢 Low | 🟡 Medium | 🔴 High)',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const density = densities[context.dataIndex];
+                                    return `${context.parsed.y} vehicles - ${density} Density`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Vehicle Count',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Frame Number',
+                                font: { size: 12, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 10 }
                             }
                         }
                     }
@@ -1162,6 +1574,10 @@
                     createHourlyTrafficChart(data.hourly_average);
                     createWeatherChart(data.weather_average);
                     createDailyChart(data.daily_average);
+                    createVehicleBreakdownChart(data.vehicle_breakdown);
+                    createCorrelationHeatmap(data.correlation_matrix);
+                    createRoadTypeChart(data.road_type_average);
+                    createSpeedTrafficChart(data.speed_traffic);
                     
                     console.log('Stats loaded successfully!');
                 } else {
@@ -1355,6 +1771,340 @@
                     }
                 }
             });
+        }
+        
+        // Vehicle Breakdown Bar Chart
+        function createVehicleBreakdownChart(vehicleData) {
+            const labels = Object.keys(vehicleData).map(v => v.charAt(0).toUpperCase() + v.slice(1));
+            const values = Object.values(vehicleData);
+            
+            const ctx = document.getElementById('vehicleBreakdownChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Vehicle Count',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Vehicle Type Distribution Across 30,000 Samples',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Total: ${context.parsed.y.toLocaleString()} vehicles`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Count',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Vehicle Type',
+                                font: { size: 14, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Correlation Heatmap
+        function createCorrelationHeatmap(correlationData) {
+            const variables = ['hour', 'is_weekend', 'avg_speed', 'cars', 'motorcycles', 'buses', 'trucks', 'total_vehicles'];
+            const labels = ['Hour', 'Weekend', 'Avg Speed', 'Cars', 'Motorcycles', 'Buses', 'Trucks', 'Total Vehicles'];
+            
+            // Create matrix data for heatmap
+            const matrixData = [];
+            for (let i = 0; i < variables.length; i++) {
+                for (let j = 0; j < variables.length; j++) {
+                    const value = correlationData[variables[i]][variables[j]];
+                    matrixData.push({
+                        x: labels[j],
+                        y: labels[i],
+                        v: value
+                    });
+                }
+            }
+            
+            const ctx = document.getElementById('correlationHeatmap').getContext('2d');
+            
+            // Create custom plugin for heatmap
+            new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Correlation',
+                        data: matrixData.map(d => ({
+                            x: labels.indexOf(d.x),
+                            y: labels.indexOf(d.y),
+                            r: 15,
+                            correlation: d.v
+                        })),
+                        backgroundColor: function(context) {
+                            const value = context.raw.correlation;
+                            const intensity = Math.abs(value);
+                            if (value > 0) {
+                                return `rgba(220, 53, 69, ${intensity})`;  // Red for positive
+                            } else {
+                                return `rgba(54, 162, 235, ${intensity})`;  // Blue for negative
+                            }
+                        },
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 1,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Feature Correlation Matrix (Red = Positive, Blue = Negative)',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const x = labels[context.parsed.x];
+                                    const y = labels[context.parsed.y];
+                                    const corr = context.raw.correlation.toFixed(3);
+                                    return `${y} ↔ ${x}: ${corr}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: -0.5,
+                            max: labels.length - 0.5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return labels[value] || '';
+                                },
+                                font: { size: 11 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            min: -0.5,
+                            max: labels.length - 0.5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return labels[value] || '';
+                                },
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Road Type Bar Chart
+        function createRoadTypeChart(roadData) {
+            const labels = Object.keys(roadData).map(r => r.charAt(0).toUpperCase() + r.slice(1));
+            const values = Object.values(roadData);
+            
+            const ctx = document.getElementById('roadTypeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Traffic',
+                        data: values,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',  // Horizontal bar chart
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Average Traffic by Road Type',
+                            font: { size: 14, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Average: ${context.parsed.x.toFixed(1)} vehicles`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Average Vehicles',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Speed vs Traffic Chart
+        function createSpeedTrafficChart(speedData) {
+            const labels = Object.keys(speedData);
+            const values = Object.values(speedData);
+            
+            const ctx = document.getElementById('speedTrafficChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Traffic',
+                        data: values,
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#764ba2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Traffic Volume vs Speed Range (km/h)',
+                            font: { size: 14, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Average: ${context.parsed.y.toFixed(1)} vehicles`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Average Vehicles',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Speed Range (km/h)',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Function to download chart as image
+        function downloadChart(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                alert('Chart not found!');
+                return;
+            }
+            
+            // Create a link element
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Downloaded!';
+            button.style.background = '#28a745';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '#667eea';
+            }, 2000);
         }
         
         // Load stats on page load
