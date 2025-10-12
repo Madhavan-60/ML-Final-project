@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Monitoring System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -586,6 +587,13 @@
                         <h3>Analysis Results:</h3>
                         <video id="videoPreview" class="video-preview" controls></video>
                         <div id="videoMetrics"></div>
+                        
+                        <!-- Detection Graph -->
+                        <div id="videoGraphContainer" style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="color: #667eea; margin-bottom: 15px;">📈 Vehicle Detection Over Time</h3>
+                            <canvas id="videoDetectionChart" style="max-height: 400px;"></canvas>
+                        </div>
+                        
                         <div id="detectionFrames"></div>
                     </div>
                 </div>
@@ -621,6 +629,30 @@
                     <div class="chart-container">
                         <h3 style="margin-bottom: 15px; color: #667eea;">Weather Impact</h3>
                         <div id="weatherChart"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Traffic Analysis Graphs -->
+            <div class="card">
+                <h2>📊 Traffic Analysis Graphs</h2>
+                <div style="margin-top: 20px;">
+                    <canvas id="hourlyTrafficChart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="card">
+                    <h2>🌤️ Weather vs Traffic</h2>
+                    <div style="margin-top: 20px;">
+                        <canvas id="weatherTrafficChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>📅 Weekend vs Weekday</h2>
+                    <div style="margin-top: 20px;">
+                        <canvas id="dailyTrafficChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -827,6 +859,14 @@
                 </div>
             `;
             
+            // Create detection graph if vehicle_counts data is available
+            if (analysis.vehicle_counts && analysis.vehicle_counts.length > 0) {
+                createVideoDetectionChart(analysis.vehicle_counts, analysis.analyzed_frames);
+                document.getElementById('videoGraphContainer').style.display = 'block';
+            } else {
+                document.getElementById('videoGraphContainer').style.display = 'none';
+            }
+            
             // Display annotated detection frames
             if (analysis.annotated_frames && analysis.annotated_frames.length > 0) {
                 const framesDiv = document.getElementById('detectionFrames');
@@ -890,6 +930,116 @@
             }
             
             document.getElementById('videoResult').classList.add('show');
+        }
+        
+        // Create video detection chart
+        let videoDetectionChartInstance = null;
+        function createVideoDetectionChart(vehicleCounts, analyzedFrames) {
+            // Destroy previous chart if exists
+            if (videoDetectionChartInstance) {
+                videoDetectionChartInstance.destroy();
+            }
+            
+            // Create frame labels
+            const labels = vehicleCounts.map((_, index) => `Frame ${index + 1}`);
+            
+            const ctx = document.getElementById('videoDetectionChart').getContext('2d');
+            videoDetectionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Vehicles Detected',
+                        data: vehicleCounts,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Vehicle Detection Across ${analyzedFrames} Analyzed Frames`,
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333',
+                            padding: { bottom: 20 }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 14 },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return `Vehicles: ${context.parsed.y}`;
+                                },
+                                afterLabel: function(context) {
+                                    const avg = vehicleCounts.reduce((a, b) => a + b, 0) / vehicleCounts.length;
+                                    const diff = context.parsed.y - avg;
+                                    if (diff > 0) {
+                                        return `(+${diff.toFixed(1)} above average)`;
+                                    } else if (diff < 0) {
+                                        return `(${diff.toFixed(1)} below average)`;
+                                    }
+                                    return '(at average)';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Vehicles',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#333'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Analyzed Frames',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#333'
+                            },
+                            ticks: {
+                                font: { size: 11 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
         }
         
         // Modal for full-size frame viewing
@@ -974,12 +1124,15 @@
         
         // Load statistics
         async function loadStats() {
+            console.log('Loading stats...');
             try {
                 const response = await fetch('/stats');
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Stats data:', data);
                 
                 if (data.success) {
-                    document.getElementById('totalSamples').textContent = data.total_samples;
+                    document.getElementById('totalSamples').textContent = data.total_samples.toLocaleString();
                     document.getElementById('avgTraffic').textContent = data.avg_traffic.toFixed(1);
                     document.getElementById('maxTraffic').textContent = data.max_traffic;
                     document.getElementById('minTraffic').textContent = data.min_traffic;
@@ -1004,10 +1157,204 @@
                     
                     document.getElementById('statsLoading').style.display = 'none';
                     document.getElementById('statsContent').style.display = 'block';
+                    
+                    // Create interactive graphs
+                    createHourlyTrafficChart(data.hourly_average);
+                    createWeatherChart(data.weather_average);
+                    createDailyChart(data.daily_average);
+                    
+                    console.log('Stats loaded successfully!');
+                } else {
+                    console.error('Stats request failed:', data);
                 }
             } catch (error) {
                 console.error('Error loading stats:', error);
             }
+        }
+        
+        // Hourly Traffic Chart
+        function createHourlyTrafficChart(hourlyData) {
+            const hours = Object.keys(hourlyData).sort((a, b) => parseInt(a) - parseInt(b));
+            const values = hours.map(h => hourlyData[h]);
+            
+            const ctx = document.getElementById('hourlyTrafficChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: hours.map(h => `${h}:00`),
+                    datasets: [{
+                        label: 'Average Traffic',
+                        data: values,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '24-Hour Traffic Pattern',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Traffic: ${context.parsed.y.toFixed(1)} vehicles`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Vehicles',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Hour of Day',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Weather Traffic Chart
+        function createWeatherChart(weatherData) {
+            const labels = Object.keys(weatherData).map(w => w.charAt(0).toUpperCase() + w.slice(1));
+            const values = Object.values(weatherData);
+            
+            const ctx = document.getElementById('weatherTrafficChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Traffic',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(54, 162, 235, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Traffic by Weather Condition',
+                            font: { size: 14, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Average: ${context.parsed.y.toFixed(1)} vehicles`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Vehicles',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Daily Traffic Chart (Weekend vs Weekday)
+        function createDailyChart(dailyData) {
+            const labels = Object.keys(dailyData).map(d => d === '0' ? 'Weekday' : 'Weekend');
+            const values = Object.values(dailyData);
+            
+            const ctx = document.getElementById('dailyTrafficChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Traffic',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(102, 126, 234, 1)',
+                            'rgba(118, 75, 162, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Weekday vs Weekend Traffic',
+                            font: { size: 14, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    return `${label}: ${value.toFixed(1)} vehicles`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
         
         // Load stats on page load

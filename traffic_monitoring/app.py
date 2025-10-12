@@ -97,13 +97,13 @@ def predict():
 def stats():
     """Get model statistics"""
     try:
-        data_path = os.path.join(script_dir, 'traffic_data.csv')
+        data_path = os.path.join(script_dir, 'traffic_data_30k.csv')
         df = pd.read_csv(data_path)
         
         # Calculate statistics
-        hourly_avg = df.groupby('hour')['vehicle_count'].mean().to_dict()
-        daily_avg = df.groupby('day_of_week')['vehicle_count'].mean().to_dict()
-        weather_avg = df.groupby('weather')['vehicle_count'].mean().to_dict()
+        hourly_avg = df.groupby('hour')['total_vehicles'].mean().to_dict()
+        daily_avg = df.groupby('is_weekend')['total_vehicles'].mean().to_dict()
+        weather_avg = df.groupby('weather')['total_vehicles'].mean().to_dict()
         
         return jsonify({
             'success': True,
@@ -111,9 +111,9 @@ def stats():
             'daily_average': daily_avg,
             'weather_average': weather_avg,
             'total_samples': len(df),
-            'avg_traffic': float(df['vehicle_count'].mean()),
-            'max_traffic': int(df['vehicle_count'].max()),
-            'min_traffic': int(df['vehicle_count'].min())
+            'avg_traffic': float(df['total_vehicles'].mean()),
+            'max_traffic': int(df['total_vehicles'].max()),
+            'min_traffic': int(df['total_vehicles'].min())
         })
     except Exception as e:
         return jsonify({
