@@ -104,7 +104,7 @@ python traffic_monitoring/visualize.py
 | Metric | Value |
 |--------|-------|
 | **Algorithm** | Random Forest (100 trees) |
-| **Dataset Size** | 2000 samples |
+| **Dataset Size** | 30000 samples |
 | **Mean Absolute Error** | 4.24 vehicles |
 | **R² Score** | 0.43 |
 | **Training Accuracy** | MAE 3.34 |
